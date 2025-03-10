@@ -1,0 +1,60 @@
+{% extends "admin/base.twig" %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="stats-grid">
+        <div class="stat-card sales">
+            <h3>Daily Sales</h3>
+            <div class="stat-value">€{{ stats.daily_sales|number_format(2) }}</div>
+        </div>
+        <div class="stat-card orders">
+            <h3>Pending Orders</h3>
+            <div class="stat-value">{{ stats.pending_orders }}</div>
+        </div>
+        <div class="stat-card inventory">
+            <h3>Low Stock Items</h3>
+            <div class="stat-value">{{ stats.low_stock|length }}</div>
+        </div>
+        <div class="stat-card revenue">
+            <h3>Monthly Revenue</h3>
+            <div class="stat-value">€{{ stats.monthly_revenue|number_format(2) }}</div>
+        </div>
+    </div>
+
+    <div class="recent-orders">
+        <h2>Recent Orders</h2>
+        <div class="order-list">
+            {% for order in stats.recent_orders %}
+                <div class="order-item">
+                    <div class="order-info">
+                        <span class="order-id">#{{ order.id }}</span>
+                        <span class="order-date">{{ order.created_at|date("d/m/Y") }}</span>
+                        <span class="order-status {{ order.status }}">{{ order.status }}</span>
+                    </div>
+                    <div class="order-total">€{{ order.total_price|number_format(2) }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="metrics-panel">
+        <div class="metric-group">
+            <h3>Production Efficiency</h3>
+            <div class="chart-container">
+                <canvas id="efficiencyChart"></canvas>
+            </div>
+            <div class="metric-details">
+                <span>Current: {{ metrics.efficiency.current }}%</span>
+                <span>Target: {{ metrics.efficiency.target }}%</span>
+            </div>
+        </div>
+        
+        <div class="metric-group">
+            <h3>Resource Utilization</h3>
+            <div class="chart-container">
+                <canvas id="utilizationChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

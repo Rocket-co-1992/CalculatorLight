@@ -1,0 +1,25 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="order-tracking">
+    <h1>Order #{{ order.id }}</h1>
+    
+    <div class="tracking-timeline">
+        {% for event in timeline %}
+            <div class="timeline-event {{ event.status }}">
+                <div class="event-date">{{ event.created_at|date("d/m/Y H:i") }}</div>
+                <div class="event-status">{{ event.status|title }}</div>
+                <div class="event-description">{{ event.description }}</div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <div class="shipping-info">
+        {% if order.tracking_number %}
+            <h3>Tracking Number</h3>
+            <p>{{ order.tracking_number }}</p>
+            <a href="{{ shipping_url }}" target="_blank" class="btn">Track Shipment</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

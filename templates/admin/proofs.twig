@@ -1,0 +1,31 @@
+{% extends "admin/base.twig" %}
+
+{% block content %}
+<div class="proof-review-container">
+    <h1>Design Proofs Review</h1>
+    
+    <div class="proof-list">
+        {% for proof in proofs %}
+            <div class="proof-item" data-proof-id="{{ proof.id }}">
+                <div class="proof-preview">
+                    <img src="{{ proof.design_preview }}" alt="Design Preview">
+                </div>
+                <div class="proof-details">
+                    <h3>Order #{{ proof.order_id }}</h3>
+                    <p>Customer: {{ proof.customer_name }}</p>
+                    <p>Product: {{ proof.product_name }}</p>
+                    <div class="proof-actions">
+                        <textarea placeholder="Admin notes..." class="admin-notes"></textarea>
+                        <button class="btn approve" onclick="approveProof({{ proof.id }})">Approve</button>
+                        <button class="btn reject" onclick="rejectProof({{ proof.id }})">Reject</button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="/assets/js/proof-review.js"></script>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "admin/base.twig" %}
+
+{% block content %}
+<div class="analytics-dashboard">
+    <div class="filters">
+        <form method="GET" class="date-range-picker">
+            <input type="date" name="start_date" value="{{ filters.start_date }}">
+            <input type="date" name="end_date" value="{{ filters.end_date }}">
+            <button type="submit" class="btn">Update</button>
+        </form>
+    </div>
+
+    <div class="metrics-grid">
+        <div class="metric-card revenue">
+            <h3>Total Revenue</h3>
+            <div class="value">€{{ metrics.revenue|number_format(2) }}</div>
+            <div class="trend {{ metrics.revenue_trend > 0 ? 'positive' : 'negative' }}">
+                {{ metrics.revenue_trend }}%
+            </div>
+        </div>
+
+        <div class="metric-card production">
+            <h3>Production Efficiency</h3>
+            <div class="value">{{ metrics.efficiency }}%</div>
+            <div class="details">
+                <div>Completed: {{ metrics.completed_jobs }}</div>
+                <div>In Progress: {{ metrics.in_progress_jobs }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="charts-container">
+        <div class="chart">
+            <canvas id="salesTrendChart"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="productionChart"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/assets/js/analytics.js"></script>
+{% endblock %}

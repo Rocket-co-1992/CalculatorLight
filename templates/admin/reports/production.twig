@@ -1,0 +1,38 @@
+{% extends "admin/base.twig" %}
+
+{% block content %}
+<div class="production-report">
+    <div class="metrics-grid">
+        <div class="metric-card efficiency">
+            <h3>Production Efficiency</h3>
+            <div class="chart-container">
+                <canvas id="efficiencyChart"></canvas>
+            </div>
+            <div class="metrics-details">
+                <div class="metric">
+                    <span class="label">Average Efficiency</span>
+                    <span class="value">{{ report.efficiency.average|number_format(1) }}%</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Peak Efficiency</span>
+                    <span class="value">{{ report.efficiency.peak|number_format(1) }}%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-card materials">
+            <h3>Material Usage</h3>
+            <div class="chart-container">
+                <canvas id="materialsChart"></canvas>
+            </div>
+            <div class="waste-metrics">
+                <span>Waste Percentage: {{ report.material_usage.waste_percentage|number_format(1) }}%</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="/assets/js/charts/production-reports.js"></script>
+{% endblock %}

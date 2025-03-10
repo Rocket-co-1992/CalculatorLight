@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Web-to-Print{% endblock %}</title>
+    {% for css in assets.css %}
+        <link rel="stylesheet" href="{{ css }}">
+    {% endfor %}
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/products">Products</a>
+            {% if is_logged_in %}
+                <div class="notification-bell">
+                    <span class="icon">🔔</span>
+                    {% if unread_notifications > 0 %}
+                        <span class="badge">{{ unread_notifications }}</span>
+                    {% endif %}
+                </div>
+                <a href="/orders">My Orders</a>
+                <a href="/logout">Logout</a>
+            {% else %}
+                <a href="/login">Login</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; {{ "now"|date("Y") }} Web-to-Print System</p>
+    </footer>
+
+    {% for js in assets.js %}
+        <script src="{{ js }}"></script>
+    {% endfor %}
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

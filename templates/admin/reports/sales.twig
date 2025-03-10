@@ -1,0 +1,46 @@
+{% extends "admin/base.twig" %}
+
+{% block content %}
+<div class="reports-container">
+    <div class="report-filters">
+        <form method="GET" class="date-range-form">
+            <input type="date" name="start_date" value="{{ date_range.start }}">
+            <input type="date" name="end_date" value="{{ date_range.end }}">
+            <button type="submit" class="btn">Filter</button>
+        </form>
+    </div>
+
+    <div class="sales-chart">
+        <canvas id="salesChart"></canvas>
+    </div>
+
+    <div class="product-performance">
+        <h2>Product Performance</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Orders</th>
+                    <th>Units Sold</th>
+                    <th>Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.total_sold }}</td>
+                        <td>{{ product.units_sold }}</td>
+                        <td>€{{ product.revenue|number_format(2) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/assets/js/reports.js"></script>
+{% endblock %}

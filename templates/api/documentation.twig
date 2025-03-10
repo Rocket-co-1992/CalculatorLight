@@ -1,0 +1,35 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="api-docs">
+    <h1>API Documentation</h1>
+    <p>Version: {{ api_version }}</p>
+    <p>Base URL: {{ base_url }}</p>
+
+    <h2>Endpoints</h2>
+    {% for endpoint in endpoints %}
+        <div class="endpoint">
+            <h3>{{ endpoint.method }} {{ endpoint.path }}</h3>
+            <p>{{ endpoint.description }}</p>
+            
+            {% if endpoint.parameters %}
+                <h4>Parameters</h4>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                    </tr>
+                    {% for name, param in endpoint.parameters %}
+                        <tr>
+                            <td>{{ name }}</td>
+                            <td>{{ param.type }}</td>
+                            <td>{{ param.required ? 'Yes' : 'No' }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
