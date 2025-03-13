@@ -42,6 +42,30 @@ class ApiController {
         ];
     }
 
+    private function validateApiKey() {
+        $apiKey = $this->request->getHeader('X-API-Key');
+        if (!$apiKey) {
+            throw new \Exception('API key required', 401);
+        }
+        // Validate against stored API keys
+        return true;
+    }
+
+    private function jsonResponse($data, $code = 200) {
+        http_response_code($code);
+        header('Content-Type: application/json');
+        return json_encode($data);
+    }
+
+    private function validateWebhookSignature() {
+        $signature = $this->request->getHeader('X-Webhook-Signature');
+        if (!$signature) {
+            return false;
+        }
+        // Implement signature validation
+        return true;
+    }
+
     public function webhooks() {
         if (!$this->validateWebhookSignature()) {
             throw new \Exception('Invalid webhook signature');
@@ -52,3 +76,17 @@ class ApiController {
 
         switch ($event) {
             case 'payment.success':
+                $order = new \Models\Order();
+                $order->processPayment($data);
+                return $this->jsonResponse(['success' => true]);
+                
+            case 'order.update':
+                $order = new \Models\Order();
+                $order->updateStatus($data);
+                return $this->jsonResponse(['success' => true]);
+                
+            default:
+                throw new \Exception('Unknown webhook event', 400);
+        }
+    }
+}
