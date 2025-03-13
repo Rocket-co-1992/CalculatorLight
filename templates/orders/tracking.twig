@@ -1,0 +1,31 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="tracking-container glass-panel">
+    <div class="order-info">
+        <h2>Order #{{ order.reference }}</h2>
+        <div class="order-status glass-panel">
+            <div class="status-timeline">
+                {% for step in order.timeline %}
+                    <div class="timeline-step {{ step.status }}" data-step="{{ step.name }}">
+                        <div class="step-icon">{{ step.icon }}</div>
+                        <div class="step-info">
+                            <span class="step-name">{{ step.name }}</span>
+                            <span class="step-date">{{ step.date }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="delivery-info glass-panel">
+        <div class="delivery-map" id="deliveryMap"></div>
+        <div class="delivery-details">
+            <div class="eta">Estimated delivery: {{ order.eta }}</div>
+            <div class="carrier">{{ order.carrier }}</div>
+            <div class="tracking-number">{{ order.tracking_number }}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

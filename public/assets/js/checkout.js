@@ -1,39 +1,44 @@
-class CheckoutHandler {
+class CheckoutManager {
     constructor() {
-        this.form = document.getElementById('paymentForm');
+        this.initializePaymentMethods();
         this.bindEvents();
     }
 
-    bindEvents() {
-        this.form.addEventListener('submit', this.handleSubmit.bind(this));
+    initializePaymentMethods() {
+        this.selectedMethod = null;
+        this.paymentOptions = document.querySelectorAll('.payment-option');
     }
 
-    async handleSubmit(e) {
-        e.preventDefault();
-        const formData = new FormData(this.form);
+    bindEvents() {
+        this.paymentOptions.forEach(option => {
+            option.addEventListener('click', (e) => this.selectPaymentMethod(e));
+        });
+    }
+
+    selectPaymentMethod(e) {
+        const method = e.currentTarget;
+        this.paymentOptions.forEach(opt => opt.classList.remove('selected'));
+        method.classList.add('selected');
+        this.selectedMethod = method.dataset.method;
         
-        try {
-            const response = await fetch('/payment/process', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-            
-            const result = await response.json();
-            if (result.success) {
-                window.location.href = result.redirect;
-            } else {
-                alert(result.error);
-            }
-        } catch (error) {
-            console.error('Payment error:', error);
-            alert('Payment processing failed. Please try again.');
+        this.initializePaymentProvider(this.selectedMethod);
+    }
+
+    async initializePaymentProvider(method) {
+        switch(method) {
+            case 'mbway':
+                await this.initializeMBWay();
+                break;
+            case 'card':
+                await this.initializeStripe();
+                break;
+            case 'multibanco':
+                await this.initializeMultibanco();
+                break;
         }
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    new CheckoutHandler();
+    new CheckoutManager();
 });

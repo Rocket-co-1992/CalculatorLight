@@ -2,6 +2,8 @@
 namespace Core\Production;
 
 use Core\Database;
+use Core\Exceptions\WorkflowException;
+use Core\Log\Logger;
 
 class Workflow {
     private $db;
@@ -18,6 +20,8 @@ class Workflow {
     private $colorManager;
     private $printerMonitor;
     private $maintenanceScheduler;
+    private Logger $logger;
+    private array $metrics = [];
 
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
@@ -34,6 +38,16 @@ class Workflow {
         $this->colorManager = new ColorManager();
         $this->printerMonitor = new PrinterMonitor();
         $this->maintenanceScheduler = new MaintenanceScheduler();
+        $this->logger = new Logger();
+        $this->initializeMetrics();
+    }
+
+    private function initializeMetrics(): void {
+        $this->metrics = [
+            'start_time' => microtime(true),
+            'steps_completed' => 0,
+            'errors' => []
+        ];
     }
 
     public function assignToProductionQueue($orderId) {
@@ -281,5 +295,26 @@ class Workflow {
             'completion' => $estimate['estimated_completion'],
             'duration' => $estimate['total_time']
         ]);
+    }
+
+    private function processWithRetry(callable $process, int $retries = 3): mixed {
+        $lastException = null;
+
+        for ($i = 0; $i < $retries; $i++) {
+            try {
+                return $process();
+            } catch (\Exception $e) {
+                $lastException = $e;
+                $this->logger->warning('Retry attempt ' . ($i + 1), [
+                    'error' => $e->getMessage(),
+                    'attempt' => $i + 1
+                ]);
+                if ($i < $retries - 1) {
+                    sleep(pow(2, $i)); // Exponential backoff
+                }
+            }
+        }
+
+        throw new WorkflowException('Process failed after ' . $retries . ' attempts', 0, $lastException);
     }
 }

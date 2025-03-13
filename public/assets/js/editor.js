@@ -1,21 +1,29 @@
 class WebToPrintEditor {
     constructor(containerId, config) {
         this.container = document.getElementById(containerId);
-        this.canvas = document.createElement('canvas');
-        this.ctx = this.canvas.getContext('2d');
-        this.elements = [];
-        this.activeElement = null;
+        this.config = config;
+        this.layers = [];
+        this.history = [];
+        this.historyIndex = -1;
+        this.activeLayer = null;
+        this.gridSize = 10;
         
-        this.init(config);
+        this.init();
     }
 
-    init(config) {
-        this.canvas.width = config.canvas.width;
-        this.canvas.height = config.canvas.height;
-        this.container.appendChild(this.canvas);
-        
+    init() {
+        this.setupCanvas();
         this.setupTools();
         this.bindEvents();
+        this.enableHistory();
+    }
+
+    setupCanvas() {
+        this.canvas = document.createElement('canvas');
+        this.canvas.width = this.config.width || 800;
+        this.canvas.height = this.config.height || 600;
+        this.ctx = this.canvas.getContext('2d');
+        this.container.appendChild(this.canvas);
     }
 
     setupTools() {
@@ -115,5 +123,53 @@ class WebToPrintEditor {
                 })
             }).then(() => this.render());
         }
+    }
+
+    // Gerenciamento de Layers
+    addLayer() {
+        const layer = {
+            id: `layer_${this.layers.length}`,
+            name: `Layer ${this.layers.length + 1}`,
+            elements: [],
+            visible: true,
+            locked: false
+        };
+        this.layers.push(layer);
+        this.activeLayer = layer;
+        this.saveToHistory();
+        return layer;
+    }
+
+    // Sistema de Histórico
+    saveToHistory() {
+        if (this.historyIndex < this.history.length - 1) {
+            this.history = this.history.slice(0, this.historyIndex + 1);
+        }
+        this.history.push(JSON.stringify(this.layers));
+        this.historyIndex++;
+    }
+
+    undo() {
+        if (this.historyIndex > 0) {
+            this.historyIndex--;
+            this.layers = JSON.parse(this.history[this.historyIndex]);
+            this.render();
+        }
+    }
+
+    redo() {
+        if (this.historyIndex < this.history.length - 1) {
+            this.historyIndex++;
+            this.layers = JSON.parse(this.history[this.historyIndex]);
+            this.render();
+        }
+    }
+
+    // Sistema de Snap
+    snapToGrid(point) {
+        return {
+            x: Math.round(point.x / this.gridSize) * this.gridSize,
+            y: Math.round(point.y / this.gridSize) * this.gridSize
+        };
     }
 }

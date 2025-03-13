@@ -1,0 +1,52 @@
+{% extends "admin/base.twig" %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <!-- Quick Stats -->
+    <div class="stats-overview glass-panel animate-fade">
+        <div class="stats-grid">
+            {% for stat in quickStats %}
+                <div class="stat-card glass-panel" data-stat="{{ stat.id }}">
+                    <div class="stat-icon">{{ stat.icon }}</div>
+                    <div class="stat-info">
+                        <div class="stat-value">{{ stat.value }}</div>
+                        <div class="stat-label">{{ stat.label }}</div>
+                    </div>
+                    <div class="stat-trend {{ stat.trend >= 0 ? 'positive' : 'negative' }}">
+                        {{ stat.trend }}%
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Printer Status -->
+    <div class="printers-monitor glass-panel">
+        <h2>Print System Status</h2>
+        <div class="printers-grid">
+            {% for printer in printers %}
+                <div class="printer-card glass-panel" data-printer-id="{{ printer.id }}">
+                    <div class="printer-status {{ printer.status }}"></div>
+                    <div class="printer-info">
+                        <h3>{{ printer.name }}</h3>
+                        <div class="printer-metrics">
+                            <div class="metric">
+                                <label>Queue</label>
+                                <span>{{ printer.queue }}</span>
+                            </div>
+                            <div class="metric">
+                                <label>Ink Levels</label>
+                                <div class="ink-levels">
+                                    {% for color, level in printer.ink_levels %}
+                                        <div class="ink-bar" style="--level: {{ level }}%; --color: {{ color }}"></div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.twig" %}
+
+{% block title %}Print Products Catalog{% endblock %}
+
+{% block content %}
+<div class="catalog-grid">
+    {% for category in categories %}
+        <div class="category-section glass-panel animate-slide">
+            <h2>{{ category.name }}</h2>
+            <div class="products-grid">
+                {% for product in category.products %}
+                    <div class="product-card glass-panel" data-product-id="{{ product.id }}">
+                        <div class="product-preview">
+                            <img src="{{ product.thumbnail }}" alt="{{ product.name }}" class="preview-image">
+                            <button class="preview-3d-btn tool-button" data-tooltip="3D Preview">
+                                <i class="icon">🔄</i>
+                            </button>
+                        </div>
+                        <div class="product-info">
+                            <h3>{{ product.name }}</h3>
+                            <p>{{ product.description }}</p>
+                            <div class="product-actions">
+                                <span class="price">From €{{ product.base_price }}</span>
+                                <button class="btn btn-primary animate-glow">Customize</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

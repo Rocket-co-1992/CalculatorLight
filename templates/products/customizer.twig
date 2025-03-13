@@ -1,0 +1,73 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="customizer-container glass-panel">
+    <div class="product-viewer">
+        <div id="3d-viewer" class="viewer-canvas"></div>
+        <div class="viewer-controls glass-panel">
+            <button class="tool-button" data-view="front">
+                <i class="icon">↑</i>
+                <span class="tooltip">Front</span>
+            </button>
+            <button class="tool-button" data-view="back">
+                <i class="icon">↓</i>
+                <span class="tooltip">Back</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="customization-panel glass-panel">
+        <div class="tabs-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="materials">Materials</button>
+                <button class="tab-btn" data-tab="effects">Effects</button>
+                <button class="tab-btn" data-tab="animation">Animation</button>
+            </div>
+
+            <div class="tab-content active" data-tab="materials">
+                <div class="material-selector">
+                    <h3>Materials</h3>
+                    <div class="material-grid">
+                        {% for material in materials %}
+                            <div class="material-swatch" 
+                                 data-material="{{ material.id }}"
+                                 style="background-image: url({{ material.texture }})">
+                                <span class="tooltip">{{ material.name }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" data-tab="effects">
+                <div class="effects-controls">
+                    <div class="effect-group">
+                        <h4>Lighting</h4>
+                        <div class="slider-control-group">
+                            <label>Brightness</label>
+                            <input type="range" class="slider-control" 
+                                   data-effect="brightness" min="0" max="200" value="100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" data-tab="animation">
+                <div class="animation-controls">
+                    <button class="btn btn-primary" data-animation="rotate">Auto Rotate</button>
+                    <button class="btn btn-primary" data-animation="showcase">Showcase</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="/assets/js/three.min.js"></script>
+<script src="/assets/js/product-designer.js"></script>
+<script>
+    const designer = new ProductDesigner('3d-viewer');
+    designer.loadProduct('{{ product.model_url }}');
+</script>
+{% endblock %}

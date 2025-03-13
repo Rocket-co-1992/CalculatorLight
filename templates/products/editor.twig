@@ -2,59 +2,128 @@
 
 {% block title %}Web-to-Print Editor - {{ product.name }}{% endblock %}
 
+{% block head %}
+    <meta name="description" content="Web-to-Print Editor for {{ product.name }}">
+    <link rel="preload" href="{{ product.model_url }}" as="fetch" crossorigin>
+    <link rel="modulepreload" href="/assets/js/three.min.js">
+{% endblock %}
+
 {% block content %}
-<div class="editor-wrapper">
-    <div class="editor-sidebar">
+<div class="editor-wrapper glass-panel optimize-gpu" role="main">
+    <div class="editor-sidebar glass-panel optimize-paint">
         <div class="templates-section">
-            <h3>Templates</h3>
+            <h3 class="section-title">Templates</h3>
             <div class="template-grid">
                 {% for template in templates %}
                     <div class="template-item" data-template-id="{{ template.id }}">
                         <img src="{{ template.thumbnail }}" alt="{{ template.name }}">
-                        <span>{{ template.name }}</span>
+                        <span class="template-name">{{ template.name }}</span>
                     </div>
                 {% endfor %}
             </div>
         </div>
-        <h2>{{ product.name }}</h2>
+        
         <div class="product-options">
-            <form id="productForm">
+            <h2 class="product-title">{{ product.name }}</h2>
+            <form id="productForm" class="options-form">
                 <div class="form-group">
-                    <label>Quantity</label>
-                    <input type="number" name="quantity" min="1" value="1">
+                    <label class="form-label">Quantity</label>
+                    <input type="number" name="quantity" min="1" value="1" class="form-input">
                 </div>
+                
                 <div class="form-group">
-                    <label>Size</label>
-                    <select name="size">
+                    <label class="form-label">Size</label>
+                    <select name="size" class="form-select">
                         <option value="standard">Standard</option>
                         <option value="custom">Custom</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
-                    <label>Finishing</label>
-                    <select name="finishing" multiple>
-                        <option value="lamination">Lamination</option>
-                        <option value="uv">UV Coating</option>
-                        <option value="foil">Foil Stamping</option>
-                    </select>
+                    <label class="form-label">Finishing</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="finishing[]" value="lamination">
+                            Lamination
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="finishing[]" value="uv">
+                            UV Coating
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="finishing[]" value="foil">
+                            Foil Stamping
+                        </label>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
     
-    <div id="editor" class="editor-container"></div>
+    <div id="editor" 
+         class="editor-container" 
+         role="application" 
+         aria-label="Design Editor"
+         data-loading="false">
+        <div class="editor-tools glass-panel" role="toolbar">
+            <div class="tools-group">
+                <button class="tool-button" 
+                        data-tool="select" 
+                        aria-label="Select Tool"
+                        aria-pressed="false">
+                    <i class="icon" aria-hidden="true">⇱</i>
+                    <span class="tooltip">Select</span>
+                </button>
+                <button class="tool-button" data-tool="text" aria-label="Add Text Tool" aria-pressed="false">
+                    <i class="icon" aria-hidden="true">T</i>
+                    <span class="tooltip">Add Text</span>
+                </button>
+                <button class="tool-button" data-tool="image" aria-label="Add Image Tool" aria-pressed="false">
+                    <i class="icon" aria-hidden="true">🖼️</i>
+                </button>
+                <button class="tool-button" data-tool="shape" aria-label="Add Shape Tool" aria-pressed="false">
+                    <i class="icon" aria-hidden="true">⬜</i>
+                </button>
+                <div class="separator"></div>
+                <button class="tool-button" data-tool="undo" aria-label="Undo" aria-pressed="false">
+                    <i class="icon" aria-hidden="true">↩️</i>
+                </button>
+                <button class="tool-button" data-tool="redo" aria-label="Redo" aria-pressed="false">
+                    <i class="icon" aria-hidden="true">↪️</i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="canvas-controls" role="toolbar" aria-label="Canvas Controls">
+            <button class="tool-button" data-action="zoom-in" aria-label="Zoom In">+</button>
+            <button class="tool-button" data-action="zoom-out" aria-label="Zoom Out">-</button>
+            <button class="tool-button" data-action="reset" aria-label="Reset Zoom">↺</button>
+        </div>
+        
+        <div class="layer-panel" role="complementary" aria-label="Layers">
+            <h4>Layers</h4>
+            <div id="layerList" class="layer-list"></div>
+            <div class="layer-controls">
+                <button class="tool-button" data-action="add-layer" aria-label="Add Layer">+</button>
+                <button class="tool-button" data-action="remove-layer" aria-label="Remove Layer">-</button>
+                <button class="tool-button" data-action="duplicate-layer" aria-label="Duplicate Layer">⎘</button>
+            </div>
+        </div>
+    </div>
     
     <div class="editor-actions">
-        <button id="saveBtn" class="btn primary">Save Design</button>
-        <button id="previewBtn" class="btn">Preview</button>
-        <button id="orderBtn" class="btn success">Place Order</button>
+        <button id="saveBtn" class="btn btn-primary">Save Design</button>
+        <button id="previewBtn" class="btn btn-secondary">Preview</button>
+        <button id="orderBtn" class="btn btn-success">Place Order</button>
     </div>
 </div>
 {% endblock %}
 
 {% block javascripts %}
-<script src="/assets/js/editor.js"></script>
-<script>
-    const editor = new WebToPrintEditor('editor', {{ editorConfig|json_encode|raw }});
+<script type="module">
+    const editor = new ProductDesigner('editor', {{ editorConfig|json_encode|raw }});
+    
+    // Cleanup on page unload
+    window.addEventListener('unload', () => editor.dispose());
 </script>
 {% endblock %}

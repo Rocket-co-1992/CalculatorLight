@@ -1,0 +1,112 @@
+.customizer-container {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    min-height: 80vh;
+}
+
+.product-viewer {
+    position: relative;
+    background: var(--surface-glass);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.viewer-canvas {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+}
+
+.viewer-controls {
+    position: absolute;
+    bottom: var(--spacing-md);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+}
+
+.material-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.material-swatch {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-size: cover;
+    position: relative;
+    border: var(--glass-border);
+}
+
+.material-swatch:hover {
+    transform: scale(1.1);
+    box-shadow: var(--glow-primary);
+}
+
+.material-swatch.active {
+    border: 2px solid var(--primary);
+    animation: pulseGlow 2s infinite;
+}
+
+.tabs-container {
+    background: var(--surface-glass);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.tab-buttons {
+    display: flex;
+    border-bottom: var(--glass-border);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: var(--spacing-sm);
+    background: transparent;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: var(--glow-primary);
+}
+
+.tab-content {
+    display: none;
+    padding: var(--spacing-md);
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.effects-controls,
+.animation-controls {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.effect-group {
+    background: var(--surface-glass);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+}
+
+.slider-control-group {
+    display: grid;
+    gap: var(--spacing-xs);
+}

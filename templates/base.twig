@@ -4,42 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Web-to-Print{% endblock %}</title>
+    <link rel="stylesheet" href="/assets/css/design-system.css">
     {% for css in assets.css %}
         <link rel="stylesheet" href="{{ css }}">
     {% endfor %}
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/products">Products</a>
-            {% if is_logged_in %}
-                <div class="notification-bell">
-                    <span class="icon">🔔</span>
-                    {% if unread_notifications > 0 %}
-                        <span class="badge">{{ unread_notifications }}</span>
+    <header class="main-header">
+        <div class="container">
+            <nav class="main-nav">
+                <a href="/" class="nav-logo">Web-to-Print</a>
+                <div class="nav-links">
+                    <a href="/products">Products</a>
+                    {% if is_logged_in %}
+                        <div class="notification-bell">
+                            <span class="icon">🔔</span>
+                            {% if unread_notifications > 0 %}
+                                <span class="badge">{{ unread_notifications }}</span>
+                            {% endif %}
+                        </div>
+                        <a href="/orders">My Orders</a>
+                        <a href="/logout" class="btn btn-secondary">Logout</a>
+                    {% else %}
+                        <a href="/login" class="btn btn-primary">Login</a>
                     {% endif %}
                 </div>
-                <a href="/orders">My Orders</a>
-                <a href="/logout">Logout</a>
-            {% else %}
-                <a href="/login">Login</a>
-            {% endif %}
-        </nav>
+            </nav>
+        </div>
     </header>
 
-    <main>
+    <main class="container">
         {% block content %}{% endblock %}
     </main>
 
-    <footer>
-        <p>&copy; {{ "now"|date("Y") }} Web-to-Print System</p>
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; {{ "now"|date("Y") }} Web-to-Print System</p>
+        </div>
     </footer>
 
-    {% for js in assets.js %}
-        <script src="{{ js }}"></script>
-    {% endfor %}
+    <script src="/assets/js/notifications.js"></script>
+    <script>
+        const notifications = new NotificationSystem();
+    </script>
     {% block javascripts %}{% endblock %}
 </body>
 </html>

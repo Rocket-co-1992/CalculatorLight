@@ -1,0 +1,47 @@
+{% extends "base.twig" %}
+
+{% block title %}Checkout - {{ order.reference }}{% endblock %}
+
+{% block content %}
+<div class="checkout-container glass-panel">
+    <div class="order-summary glass-panel">
+        <h2>Order Summary</h2>
+        <div class="order-items">
+            {% for item in order.items %}
+                <div class="order-item animate-fade">
+                    <img src="{{ item.thumbnail }}" alt="{{ item.name }}">
+                    <div class="item-details">
+                        <h3>{{ item.name }}</h3>
+                        <p>{{ item.specifications }}</p>
+                        <span class="price">€{{ item.price|number_format(2) }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="order-total">
+            <div class="subtotal">Subtotal: €{{ order.subtotal|number_format(2) }}</div>
+            <div class="tax">VAT (23%): €{{ order.tax|number_format(2) }}</div>
+            <div class="total">Total: €{{ order.total|number_format(2) }}</div>
+        </div>
+    </div>
+
+    <div class="payment-methods glass-panel">
+        <h2>Payment Method</h2>
+        <div class="payment-options">
+            <button class="payment-option" data-method="mbway">
+                <i class="icon">📱</i>
+                <span>MB WAY</span>
+            </button>
+            <button class="payment-option" data-method="card">
+                <i class="icon">💳</i>
+                <span>Credit Card</span>
+            </button>
+            <button class="payment-option" data-method="multibanco">
+                <i class="icon">🏦</i>
+                <span>Multibanco</span>
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

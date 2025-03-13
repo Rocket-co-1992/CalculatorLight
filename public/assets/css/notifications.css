@@ -1,0 +1,77 @@
+.notification-toast {
+    position: fixed;
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+    padding: var(--spacing-md);
+    min-width: 300px;
+    z-index: 1000;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--spacing-md);
+    animation: slideInRight 0.3s ease-out;
+}
+
+.notification-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+.notification-icon.success {
+    background: var(--success);
+    box-shadow: var(--glow-success);
+}
+
+.notification-icon.error {
+    background: var(--danger);
+    box-shadow: var(--glow-danger);
+}
+
+.notification-content h4 {
+    margin-bottom: var(--spacing-xs);
+    font-size: 1rem;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--surface-glass);
+    backdrop-filter: var(--glass-backdrop);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 1.5s infinite;
+}
+
+.loading::before {
+    content: '⚡';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    font-size: 1.5rem;
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
