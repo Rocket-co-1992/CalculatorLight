@@ -1,0 +1,71 @@
+{% extends "install/layout.twig" %}
+
+{% block content %}
+<div class="installation-step">
+    <h2>Configuração do Banco de Dados</h2>
+    
+    <form id="database-form" class="setup-form" method="POST">
+        <div class="form-group">
+            <label for="db_host">Host:</label>
+            <input type="text" 
+                   id="db_host" 
+                   name="db_host" 
+                   value="localhost" 
+                   required>
+            <small>Normalmente "localhost" para hospedagem compartilhada</small>
+        </div>
+
+        <div class="form-group">
+            <label for="db_name">Nome do Banco de Dados:</label>
+            <input type="text" 
+                   id="db_name" 
+                   name="db_name" 
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label for="db_user">Usuário:</label>
+            <input type="text" 
+                   id="db_user" 
+                   name="db_user" 
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label for="db_pass">Senha:</label>
+            <input type="password" 
+                   id="db_pass" 
+                   name="db_pass" 
+                   required>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-test" onclick="testConnection()">
+                Testar Conexão
+            </button>
+            <button type="submit" class="btn btn-primary">
+                Continuar
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+async function testConnection() {
+    const form = document.getElementById('database-form');
+    const formData = new FormData(form);
+    
+    try {
+        const response = await fetch('/install/test-database', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        alert(result.success ? 'Conexão bem sucedida!' : result.error);
+    } catch (error) {
+        alert('Erro ao testar conexão');
+    }
+}
+</script>
+{% endblock %}

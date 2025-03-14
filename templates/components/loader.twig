@@ -1,0 +1,31 @@
+<div id="loading-overlay" class="loading-overlay d-none">
+    <div class="loading-content glass-card">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+        <div class="loading-text mt-2">{{ loading_text|default('Processando...') }}</div>
+    </div>
+</div>
+
+<style>
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-content {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 15px;
+    color: var(--text-color);
+}
+</style>

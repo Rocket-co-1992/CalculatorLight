@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instalação - Web-to-Print</title>
+    <link rel="stylesheet" href="/css/install.css">
+</head>
+<body class="install-page">
+    <div class="install-container glass-card">
+        <div class="install-header">
+            <h1>{{ step_title }}</h1>
+            <div class="progress-bar">
+                {% for i in 1..4 %}
+                    <div class="step {% if current_step >= i %}active{% endif %}">
+                        {{ i }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% include 'install/steps/' ~ step ~ '.twig' %}
+
+        <div class="install-footer">
+            {% if current_step > 1 %}
+                <a href="?step={{ current_step - 1 }}" class="btn btn-secondary">Voltar</a>
+            {% endif %}
+            
+            {% if not is_last_step %}
+                <button type="submit" form="setup-form" class="btn btn-primary">Continuar</button>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="/js/install.js"></script>
+</body>
+</html>

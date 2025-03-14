@@ -1,0 +1,34 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="editor-container">
+    <!-- Toolbar -->
+    <div class="editor-toolbar glass-card">
+        <div class="btn-group">
+            <button class="btn btn-futuristic" data-tool="text">
+                <i class="fas fa-text"></i> Add Text
+            </button>
+            <button class="btn btn-futuristic" data-tool="image">
+                <i class="fas fa-image"></i> Add Image
+            </button>
+        </div>
+    </div>
+
+    <!-- Canvas Area -->
+    <div class="editor-canvas-container">
+        <canvas id="editor-canvas" width="800" height="600"></canvas>
+    </div>
+
+    <!-- Properties Panel -->
+    <div class="editor-properties glass-card">
+        <h4>Properties</h4>
+        <div id="element-properties">
+            <!-- Dynamic properties -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="/js/editor.js"></script>
+{% endblock %}

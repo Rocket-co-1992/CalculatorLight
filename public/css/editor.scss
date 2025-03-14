@@ -1,0 +1,61 @@
+.editor-container {
+    display: grid;
+    grid-template-columns: 200px 1fr 300px;
+    gap: 20px;
+    height: calc(100vh - 80px);
+    padding: 20px;
+    
+    .editor-toolbar {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 15px;
+        
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+    
+    .editor-canvas-container {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        overflow: hidden;
+        
+        canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+    
+    .editor-properties {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        
+        h4 {
+            color: var(--neon-primary);
+            margin-bottom: 20px;
+        }
+    }
+}
+
+.btn-futuristic {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(45deg, var(--neon-primary), var(--neon-secondary));
+    border: none;
+    padding: 12px 24px;
+    color: white;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px var(--neon-primary);
+    }
+}

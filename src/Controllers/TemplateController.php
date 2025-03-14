@@ -36,4 +36,37 @@ class TemplateController {
             'template_id' => $templateId
         ];
     }
+
+    public function create() {
+        $templateData = $this->request->getParam('template');
+        $validator = new \Services\TemplateValidator();
+        
+        if (!$validator->validate($templateData)) {
+            return $this->jsonResponse([
+                'success' => false,
+                'errors' => $validator->getErrors()
+            ], 400);
+        }
+        
+        $template = new \Models\Template();
+        $result = $template->create($templateData);
+        
+        return $this->jsonResponse([
+            'success' => true,
+            'template_id' => $result
+        ]);
+    }
+    
+    public function getTemplatePreview($templateId) {
+        $template = new \Models\Template();
+        $data = $template->getById($templateId);
+        
+        $renderer = new \Services\TemplateRenderer();
+        $preview = $renderer->generatePreview($data);
+        
+        return $this->jsonResponse([
+            'success' => true,
+            'preview' => $preview
+        ]);
+    }
 }

@@ -3,6 +3,7 @@ namespace Controllers;
 
 use Core\Request;
 use Models\Order;
+use Models\Product;
 
 class OrderController {
     private $order;
@@ -14,24 +15,36 @@ class OrderController {
     }
 
     public function create() {
-        if (!$this->request->isAjax()) {
-            return ['error' => 'Invalid request'];
+        $product = new Product();
+        return [
+            'template' => 'order/create.twig',
+            'data' => [
+                'products' => $product->getAllActive(),
+                'materials' => $product->getMaterials(),
+                'finishing_options' => $this->getFinishingOptions()
+            ]
+        ];
+    }
+
+    public function process() {
+        $orderData = $this->request->getParams();
+
+        // Validate order data
+        if (!$this->validateOrderData($orderData)) {
+            return $this->jsonResponse([
+                'success' => false,
+                'errors' => $this->getValidationErrors()
+            ]);
         }
 
-        $items = $this->request->getParam('items');
-        $userId = $_SESSION['user_id'];
-        $totalPrice = $this->calculateTotal($items);
+        // Create order
+        $order = new Order();
+        $result = $order->create($orderData);
 
-        try {
-            $orderId = $this->order->create($userId, $items, $totalPrice);
-            return [
-                'success' => true,
-                'order_id' => $orderId,
-                'redirect' => "/payment/{$orderId}"
-            ];
-        } catch (\Exception $e) {
-            return ['error' => $e->getMessage()];
-        }
+        return $this->jsonResponse([
+            'success' => true,
+            'order_id' => $result
+        ]);
     }
 
     private function calculateTotal($items) {

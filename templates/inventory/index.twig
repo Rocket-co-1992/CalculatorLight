@@ -1,0 +1,69 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="glass-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2>Inventory Management</h2>
+                    <button class="btn btn-futuristic" data-bs-toggle="modal" data-bs-target="#addMaterialModal">
+                        <i class="fas fa-plus"></i> Add Material
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Low Stock Alerts -->
+        <div class="col-md-4">
+            <div class="glass-card p-4">
+                <h4>Low Stock Alerts</h4>
+                <div class="alert-list">
+                    {% for item in low_stock %}
+                    <div class="alert {% if item.stock_level == 'critical' %}alert-danger{% else %}alert-warning{% endif %}">
+                        <h5>{{ item.name }}</h5>
+                        <p>Current Stock: {{ item.stock_quantity }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Material List -->
+        <div class="col-md-8">
+            <div class="glass-card p-4">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>Stock</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for material in materials %}
+                            <tr>
+                                <td>{{ material.name }}</td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: {{ material.stock_percentage }}%"></div>
+                                    </div>
+                                </td>
+                                <td>{{ material.type }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-futuristic">Update</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+.webpanel-dashboard {
+    padding: 20px;
+
+    .health-indicators {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+
+        .health-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: var(--glass-bg);
+            border-radius: 8px;
+
+            .status-badge {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                margin-right: 10px;
+
+                &.healthy { background: #00ff4c; }
+                &.warning { background: #ffbb00; }
+                &.critical { background: #ff3e3e; }
+            }
+        }
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+
+        .btn {
+            flex: 1;
+            min-width: 150px;
+        }
+    }
+}

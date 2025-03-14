@@ -1,0 +1,21 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="error-container text-center">
+    <div class="glass-card p-5">
+        <h1 class="error-code">{{ error.code|default('500') }}</h1>
+        <h2 class="error-title">{{ error.title|default('Oops!') }}</h2>
+        <p class="error-message">{{ error.message|default('Algo deu errado.') }}</p>
+        
+        {% if error.code != '404' and app.debug %}
+            <div class="error-details mt-4 text-start">
+                <pre class="bg-dark p-3 rounded">{{ error.trace }}</pre>
+            </div>
+        {% endif %}
+        
+        <a href="/" class="btn btn-futuristic mt-4">
+            <i class="fas fa-home me-2"></i>Voltar ao Início
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "webpanel/base.twig" %}
+
+{% block content %}
+<div class="webpanel-dashboard">
+    <!-- System Health -->
+    <div class="glass-card mb-4">
+        <h3>System Health</h3>
+        <div class="health-indicators">
+            {% for check, status in system_health %}
+            <div class="health-item">
+                <span class="status-badge {{ status.status }}"></span>
+                {{ check|title }}: {{ status.message }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="glass-card mb-4">
+        <h3>Quick Actions</h3>
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="runOptimization()">
+                Run Optimization
+            </button>
+            <button class="btn btn-warning" onclick="clearCache()">
+                Clear Cache
+            </button>
+            <button class="btn btn-info" onclick="backupSystem()">
+                Backup System
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="/js/webpanel.js"></script>
+{% endblock %}

@@ -3,24 +3,9 @@ namespace Core;
 
 class Database {
     private static $instance = null;
-    private $pdo;
-
-    private function __construct() {
-        $config = require __DIR__ . '/../../config/config.php';
-        $dsn = "mysql:host={$config['database']['host']};dbname={$config['database']['dbname']};charset={$config['database']['charset']}";
-        
-        $options = [
-            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-            \PDO::ATTR_EMULATE_PREPARES => false
-        ];
-
-        try {
-            $this->pdo = new \PDO($dsn, $config['database']['username'], $config['database']['password'], $options);
-        } catch (\PDOException $e) {
-            throw new \Exception("Connection failed: " . $e->getMessage());
-        }
-    }
+    private $connection = null;
+    private $retryAttempts = 3;
+    private $retryDelay = 2;
 
     public static function getInstance() {
         if (self::$instance === null) {
@@ -30,6 +15,40 @@ class Database {
     }
 
     public function getConnection() {
-        return $this->pdo;
+        if ($this->connection === null) {
+            $attempts = 0;
+            while ($attempts < $this->retryAttempts) {
+                try {
+                    $this->connection = new \PDO(
+                        "mysql:host=" . getenv('DB_HOST') . 
+                        ";dbname=" . getenv('DB_NAME') . 
+                        ";charset=utf8mb4",
+                        getenv('DB_USER'),
+                        getenv('DB_PASS'),
+                        [
+                            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                            \PDO::ATTR_PERSISTENT => false,
+                            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+                        ]
+                    );
+                    break;
+                } catch (\PDOException $e) {
+                    $attempts++;
+                    if ($attempts >= $this->retryAttempts) {
+                        $this->handleError($e);
+                    }
+                    sleep($this->retryDelay);
+                }
+            }
+        }
+        return $this->connection;
+    }
+
+    private function handleError(\PDOException $e) {
+        error_log("Database connection failed: " . $e->getMessage());
+        if (getenv('APP_DEBUG') === 'true') {
+            throw $e;
+        }
+        throw new \Exception("Database connection error");
     }
 }

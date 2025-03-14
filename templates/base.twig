@@ -1,53 +1,59 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" data-theme="{{ theme|default('dark') }}" class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Web-to-Print{% endblock %}</title>
-    <link rel="stylesheet" href="/assets/css/design-system.css">
-    {% for css in assets.css %}
-        <link rel="stylesheet" href="{{ css }}">
-    {% endfor %}
-    {% block stylesheets %}{% endblock %}
-</head>
-<body>
-    <header class="main-header">
-        <div class="container">
-            <nav class="main-nav">
-                <a href="/" class="nav-logo">Web-to-Print</a>
-                <div class="nav-links">
-                    <a href="/products">Products</a>
-                    {% if is_logged_in %}
-                        <div class="notification-bell">
-                            <span class="icon">🔔</span>
-                            {% if unread_notifications > 0 %}
-                                <span class="badge">{{ unread_notifications }}</span>
-                            {% endif %}
-                        </div>
-                        <a href="/orders">My Orders</a>
-                        <a href="/logout" class="btn btn-secondary">Logout</a>
-                    {% else %}
-                        <a href="/login" class="btn btn-primary">Login</a>
-                    {% endif %}
-                </div>
-            </nav>
-        </div>
-    </header>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="description" content="{{ meta_description|default('Web-to-Print System') }}">
+    
+    <title>{% block title %}{{ config.app.name }}{% endblock %}</title>
 
-    <main class="container">
-        {% block content %}{% endblock %}
+    {# Preload critical assets #}
+    <link rel="preload" href="{{ asset('fonts/inter-var.woff2') }}" as="font" crossorigin>
+    <link rel="preload" href="{{ asset('css/critical.css') }}" as="style">
+    
+    {# Critical CSS inline #}
+    <style>{% include 'css/critical.css' %}</style>
+    
+    {# Non-critical CSS #}
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}" media="print" onload="this.media='all'">
+    {% block stylesheets %}{% endblock %}
+
+    {# Error Handler #}
+    <script>
+        window.addEventListener('error', function(e) {
+            console.error(e);
+            showToast('Erro', 'Ocorreu um erro. Por favor, tente novamente.', 'error');
+        });
+    </script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    {# Loading State #}
+    {% include 'components/loader.twig' %}
+    
+    {# Toast Messages #}
+    {% include 'components/toasts.twig' %}
+
+    {# Header #}
+    {% block header %}
+        {% include 'layout/header.twig' %}
+    {% endblock %}
+
+    {# Main Content with Error Boundary #}
+    <main class="flex-grow-1">
+        <div class="container-fluid py-4">
+            {% include 'components/alerts.twig' %}
+            {% block content %}{% endblock %}
+        </div>
     </main>
 
-    <footer class="main-footer">
-        <div class="container">
-            <p>&copy; {{ "now"|date("Y") }} Web-to-Print System</p>
-        </div>
-    </footer>
+    {# Footer #}
+    {% block footer %}
+        {% include 'layout/footer.twig' %}
+    {% endblock %}
 
-    <script src="/assets/js/notifications.js"></script>
-    <script>
-        const notifications = new NotificationSystem();
-    </script>
+    {# Core Scripts #}
+    <script src="{{ asset('js/app.js') }}" defer></script>
     {% block javascripts %}{% endblock %}
 </body>
 </html>

@@ -3,45 +3,61 @@ namespace Models;
 
 class Order {
     private $db;
+    const STATUS_PENDING = 'pending';
+    const STATUS_PROCESSING = 'processing';
+    const STATUS_PRODUCTION = 'production';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_SHIPPED = 'shipped';
 
     public function __construct() {
         $this->db = \Core\Database::getInstance()->getConnection();
     }
 
-    public function create($userId, $items, $totalPrice) {
-        $this->db->beginTransaction();
-        try {
-            $sql = "INSERT INTO orders (user_id, total_price, status) VALUES (:user_id, :total_price, 'pending')";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([
-                'user_id' => $userId,
-                'total_price' => $totalPrice
-            ]);
-            
-            $orderId = $this->db->lastInsertId();
-            $this->addOrderItems($orderId, $items);
-            
-            $this->db->commit();
-            return $orderId;
-        } catch (\Exception $e) {
-            $this->db->rollBack();
-            throw $e;
-        }
+    public function create($orderData) {
+        $sql = "INSERT INTO orders (
+            user_id, design_id, product_id, quantity, 
+            total_price, status, created_at
+        ) VALUES (
+            :user_id, :design_id, :product_id, :quantity,
+            :total_price, :status, NOW()
+        )";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            'user_id' => $orderData['user_id'],
+            'design_id' => $orderData['design_id'],
+            'product_id' => $orderData['product_id'],
+            'quantity' => $orderData['quantity'],
+            'total_price' => $orderData['total_price'],
+            'status' => self::STATUS_PENDING
+        ]);
+        
+        return $this->db->lastInsertId();
     }
 
-    private function addOrderItems($orderId, $items) {
-        $sql = "INSERT INTO order_items (order_id, product_id, quantity, price, design_data) 
-                VALUES (:order_id, :product_id, :quantity, :price, :design_data)";
+    public function updateStatus($orderId, $status) {
+        $sql = "UPDATE orders SET 
+                status = :status,
+                updated_at = NOW()
+                WHERE id = :id";
+                
         $stmt = $this->db->prepare($sql);
-        
-        foreach ($items as $item) {
-            $stmt->execute([
-                'order_id' => $orderId,
-                'product_id' => $item['product_id'],
-                'quantity' => $item['quantity'],
-                'price' => $item['price'],
-                'design_data' => json_encode($item['design_data'])
-            ]);
-        }
+        return $stmt->execute([
+            'id' => $orderId,
+            'status' => $status
+        ]);
+    }
+
+    public function getProductionQueue() {
+        $sql = "SELECT o.*, p.name as product_name, u.email as user_email
+                FROM orders o
+                JOIN products p ON o.product_id = p.id
+                JOIN users u ON o.user_id = u.id
+                WHERE o.status = :status
+                ORDER BY o.created_at ASC";
+                
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['status' => self::STATUS_PROCESSING]);
+        return $stmt->fetchAll();
     }
 }

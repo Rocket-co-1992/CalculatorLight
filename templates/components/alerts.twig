@@ -1,0 +1,47 @@
+<div id="alerts-container">
+    {% if flash_messages %}
+        {% for type, messages in flash_messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                    <div class="d-flex align-items-center">
+                        {% if type == 'success' %}
+                            <i class="fas fa-check-circle me-2"></i>
+                        {% elseif type == 'error' %}
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                        {% elseif type == 'warning' %}
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                        {% endif %}
+                        {{ message|raw }}
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+</div>
+
+{% if errors is defined and errors|length > 0 %}
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<script>
+function showErrorMessage(message) {
+    const alertsContainer = document.getElementById('alerts-container');
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-danger alert-dismissible fade show';
+    alert.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            ${message}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    `;
+    alertsContainer.appendChild(alert);
+}
+</script>

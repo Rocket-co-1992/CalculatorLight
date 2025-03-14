@@ -1,17 +1,24 @@
 <?php
 return [
     'database' => [
-        'host' => 'localhost',
-        'dbname' => 'webtoprint',
-        'username' => 'root',
-        'password' => '',
+        'host' => getenv('DB_HOST') ?: 'localhost',
+        'dbname' => getenv('DB_NAME') ?: 'webtoprint',
+        'username' => getenv('DB_USER') ?: 'your_db_user',
+        'password' => getenv('DB_PASS') ?: 'your_db_password',
         'charset' => 'utf8mb4'
     ],
     'app' => [
-        'name' => 'Web-to-Print',
-        'url' => 'http://localhost',
-        'debug' => true,
-        'timezone' => 'Europe/Lisbon'
+        'name' => 'Web-to-Print System',
+        'url' => getenv('APP_URL') ?: 'https://yourdomail.com',
+        'environment' => getenv('APP_ENV') ?: 'production',
+        'debug' => false
+    ],
+    'mail' => [
+        'host' => getenv('MAIL_HOST') ?: 'mail.yourdomain.com',
+        'port' => getenv('MAIL_PORT') ?: 587,
+        'username' => getenv('MAIL_USER') ?: 'noreply@yourdomain.com',
+        'password' => getenv('MAIL_PASS') ?: 'your_mail_password',
+        'encryption' => 'tls'
     ],
     'security' => [
         'salt' => 'your-random-salt-here',

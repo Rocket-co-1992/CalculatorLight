@@ -1,0 +1,31 @@
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    {% for message in flash_messages %}
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-{{ message.type }}">
+                <strong class="me-auto text-white">{{ message.title }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                {{ message.content }}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+function showToast(title, message, type = 'info') {
+    const toastContainer = document.querySelector('.toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <div class="toast-header bg-${type}">
+            <strong class="me-auto text-white">${title}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body">${message}</div>
+    `;
+    toastContainer.appendChild(toast);
+    new bootstrap.Toast(toast).show();
+}
+</script>

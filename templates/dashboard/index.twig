@@ -1,0 +1,51 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Stats Cards -->
+        <div class="col-md-3">
+            <div class="glass-card animate-on-scroll">
+                <h3>{{ stats.total_orders }}</h3>
+                <p>Orders Today</p>
+            </div>
+        </div>
+        <!-- More stats cards -->
+    </div>
+
+    <div class="row mt-4">
+        <!-- Orders Table -->
+        <div class="col-md-8">
+            <div class="glass-card">
+                <h4>Recent Orders</h4>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <td>#{{ order.id }}</td>
+                                <td>{{ order.customer_name }}</td>
+                                <td>
+                                    <span class="badge bg-{{ order.status_color }}">
+                                        {{ order.status }}
+                                    </span>
+                                </td>
+                                <td>€{{ order.total|number_format(2) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
